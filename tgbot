@@ -1,0 +1,32 @@
+from aiogram import Bot, types, Dispatcher, executor
+
+commands = '/help - Список команд\n/start - Запуск бота\n/counter - Счетчик'
+tg_token = '6216438205:AAExHiW8H9FMrCe3SlVCoYs0UO0RHPUH-9Q'
+bot = Bot(tg_token)
+dp = Dispatcher(bot)
+
+@dp.message_handler(commands = 'start')
+async def start(message: types.Message):
+    await message.answer('Привет!\nЧтобы узнать список команд, введи "/help"')
+    await message.delete()
+
+@dp.message_handler(commands = 'help')
+async def help(message: types.Message):
+    await message.reply(commands)
+
+@dp.message_handler(commands = 'counter')
+async def counter(message: types.Message):
+    await message.reply('Введи число')
+
+@dp.message_handler()
+async def count(message: types.Message):
+    cnt = 0
+    try:
+        message.text = int(message.text)
+        for i in range(1, message.text + 1):
+            cnt += i
+        await message.reply(cnt)
+    except:
+        print('что-то пошло не так')
+
+executor.start_polling(dp, skip_updates=True)
